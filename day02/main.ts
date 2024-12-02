@@ -6,30 +6,59 @@ function getLists(input: string) {
 }
 
 const reports = getLists(input);
-
-let safe = 0;
 const safeRangeDesc = [1, 2, 3];
 const safeRangeAsc = [-1, -2, -3];
 
-for (const report of reports) {
-  let isSafe = true;
-  const safeRange = report[0] > report[1] ? safeRangeDesc : safeRangeAsc;
-
-  for (let i = 0; i < report.length - 1; i++) {
-    const left = report[i];
-    const right = report[i + 1];
-
-    const levelDiff = left - right;
-
-    if (!safeRange.includes(levelDiff)) {
-      isSafe = false;
-      break;
+function solve1() {
+  let safe = 0;
+  for (const report of reports) {
+    const safeRange = report[0] > report[1] ? safeRangeDesc : safeRangeAsc;
+    if (isSafe(report, safeRange)) {
+      safe++;
     }
   }
 
-  if (isSafe) {
-    safe++;
-  }
+  console.log(safe);
 }
 
-console.log(safe);
+function solve2() {
+  let safe = 0;
+  for (const report of reports) {
+    const safeRange = report[0] > report[1] ? safeRangeDesc : safeRangeAsc;
+    if (isSafe(report, safeRange)) {
+      safe++;
+      continue;
+    }
+
+    let isSafeWithDamp = false;
+    for (let i = 0; i < report.length; i++) {
+      const dampenedReport = report.slice(0, i).concat(report.slice(i + 1));
+      const dampenedSafeRange = dampenedReport[0] > dampenedReport[1]
+        ? safeRangeDesc
+        : safeRangeAsc;
+      if (isSafe(dampenedReport, dampenedSafeRange)) {
+        isSafeWithDamp = true;
+        break;
+      }
+    }
+
+    if (isSafeWithDamp) {
+      safe++;
+    }
+  }
+
+  console.log(safe);
+}
+
+function isSafe(report: number[], safeRange: number[]) {
+  for (let i = 0; i < report.length - 1; i++) {
+    const levelDiff = report[i] - report[i + 1];
+    if (!safeRange.includes(levelDiff)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+solve1();
+solve2();

@@ -2,7 +2,8 @@
   "tasks": {
     "d1": "deno run -A --watch ./day01/main.ts",
     "d2": "deno run -A --watch ./day02/main.ts",
-    "d3": "deno run -A --watch ./day03/main.ts"
+    "d3": "deno run -A --watch ./day03/main.ts",
+    "d4": "deno run -A --watch ./day04/main.ts"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@1"

@@ -14,9 +14,11 @@ for (const line of splitted) {
 function canCalibrate(testValue: number, numbers: number[]) {
   const map = new Map();
 
-  function helper(index: number, currVal: number): number | boolean {
+  function calc(index: number, currVal: number): number | boolean {
     const key = `${index},${currVal}`;
-    if (map.has(key)) return map.get(key);
+    if (map.has(key)) {
+      return map.get(key);
+    }
 
     // check result when end reached
     if (index === numbers.length) {
@@ -27,15 +29,27 @@ function canCalibrate(testValue: number, numbers: number[]) {
 
     // apply operators
     const next = numbers[index];
-    const sum = helper(index + 1, currVal + next);
-    const product = helper(index + 1, currVal * next);
 
-    const result = sum || product;
-    map.set(key, result);
-    return result;
+    if (calc(index + 1, currVal + next)) {
+      map.set(key, true);
+      return true;
+    }
+
+    if (calc(index + 1, currVal * next)) {
+      map.set(key, true);
+      return true;
+    }
+
+    if (calc(index + 1, Number(`${currVal}${next}`))) {
+      map.set(key, true);
+      return true;
+    }
+
+    map.set(key, false);
+    return false;
   }
 
-  return helper(1, numbers[0]);
+  return calc(1, numbers[0]);
 }
 
 let testValueSum = 0;
@@ -45,4 +59,4 @@ for (const { testValue, numbers } of equations) {
   }
 }
 
-console.log("p1 result:", testValueSum);
+console.log("result:", testValueSum);

@@ -6,7 +6,8 @@
     "d4": "deno run -A --watch ./day04/main.ts",
     "d5": "deno run -A --watch ./day05/main.ts",
     "d6": "deno run -A --watch ./day06/main.ts",
-    "d7": "deno run -A --watch ./day07/main.ts"
+    "d7": "deno run -A --watch ./day07/main.ts",
+    "d8": "deno run -A --watch ./day08/main.ts"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@1"

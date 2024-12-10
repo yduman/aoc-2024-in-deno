@@ -1,18 +1,9 @@
-// Read the input files
 const example = await Deno.readTextFile("./day10/example.txt");
 const input = await Deno.readTextFile("./day10/input.txt");
 
-function getTopographicMap(input: string) {
-  return input.split("\n").map((line) => line.split("").map(Number));
-}
-
-function isInBounds(x: number, y: number, map: number[][]) {
-  return x >= 0 && y >= 0 && x < map.length && y < map[0].length;
-}
-
-const topographicMap = getTopographicMap(input);
-const ROWS = topographicMap.length;
-const COLS = topographicMap[0].length;
+const tMap = input.split("\n").map((line) => line.split("").map(Number));
+const ROWS = tMap.length;
+const COLS = tMap[0].length;
 const directions = [
   [-1, 0],
   [1, 0],
@@ -20,7 +11,11 @@ const directions = [
   [0, 1],
 ];
 
-function getScore(startX: number, startY: number) {
+function isInBounds(x: number, y: number) {
+  return x >= 0 && y >= 0 && x < ROWS && y < COLS;
+}
+
+function p1(startX: number, startY: number) {
   const Q = [[startX, startY, 0]];
   const visited = new Set<string>();
   let score = 0;
@@ -35,7 +30,7 @@ function getScore(startX: number, startY: number) {
 
     visited.add(key);
 
-    if (topographicMap[x][y] === 9) {
+    if (tMap[x][y] === 9) {
       score++;
       continue;
     }
@@ -45,11 +40,11 @@ function getScore(startX: number, startY: number) {
       const newY = y + dirY;
 
       if (
-        isInBounds(newX, newY, topographicMap) &&
+        isInBounds(newX, newY) &&
         !visited.has(`${newX},${newY}`) &&
-        topographicMap[newX][newY] === height + 1
+        tMap[newX][newY] === height + 1
       ) {
-        Q.push([newX, newY, topographicMap[newX][newY]]);
+        Q.push([newX, newY, tMap[newX][newY]]);
       }
     }
   }
@@ -57,13 +52,47 @@ function getScore(startX: number, startY: number) {
   return score;
 }
 
-function calcScore() {
+function p2(startX: number, startY: number) {
+  const paths = new Set<string>();
+
+  function dfs(x: number, y: number, path: string) {
+    const key = `${x},${y}`;
+
+    if (path.includes(key)) {
+      return;
+    }
+
+    path += key;
+
+    if (tMap[x][y] === 9) {
+      paths.add(path);
+      return;
+    }
+
+    for (const [dirX, dirY] of directions) {
+      const newX = x + dirX;
+      const newY = y + dirY;
+
+      if (
+        isInBounds(newX, newY) &&
+        tMap[newX][newY] === tMap[x][y] + 1
+      ) {
+        dfs(newX, newY, path);
+      }
+    }
+  }
+
+  dfs(startX, startY, "");
+  return paths.size;
+}
+
+function calcScore(cb: (x: number, y: number) => number) {
   let totalScore = 0;
 
   for (let x = 0; x < ROWS; x++) {
     for (let y = 0; y < COLS; y++) {
-      if (topographicMap[x][y] === 0) {
-        totalScore += getScore(x, y);
+      if (tMap[x][y] === 0) {
+        totalScore += cb(x, y);
       }
     }
   }
@@ -71,4 +100,5 @@ function calcScore() {
   return totalScore;
 }
 
-console.log("p1 result:", calcScore());
+console.log("p1 result:", calcScore(p1));
+console.log("p2 result:", calcScore(p2));

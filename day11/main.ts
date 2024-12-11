@@ -6,13 +6,11 @@ let stoneMap = new Map<number, number>();
 stones.forEach((stone) => stoneMap.set(stone, (stoneMap.get(stone) || 0) + 1));
 
 function is0(x: number) {
-  if (x === 0) return true;
-  return false;
+  return x === 0;
 }
 
 function hasEvenDigits(x: number) {
-  const len = x.toString().length;
-  return len % 2 === 0;
+  return x.toString().length % 2 === 0;
 }
 
 function split(x: number) {
@@ -30,7 +28,7 @@ function p1() {
   let currentStones = stones;
   while (blinks <= 25) {
     currentStones.forEach((stone) => {
-      if (is0(stone)) {
+      if (stone === 0) {
         replaced.push(1);
       } else if (hasEvenDigits(stone)) {
         const [left, right] = split(stone);
@@ -53,7 +51,7 @@ function p2() {
     const newStoneMap = new Map<number, number>();
 
     for (const [stone, count] of stoneMap.entries()) {
-      if (stone === 0) {
+      if (is0(stone)) {
         newStoneMap.set(1, (newStoneMap.get(1) || 0) + count);
       } else if (hasEvenDigits(stone)) {
         const [left, right] = split(stone);
